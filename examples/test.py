@@ -70,7 +70,6 @@ if __name__ == "__main__":
     lens = []
 
     env = DoublePendWrapper()
-
     # Initial random rollouts to generate a dataset
     X, Y, _, _ = rollout(env, None, timesteps=T, random=True, SUBS=SUBS, render=True)
     for i in range(1, J):
@@ -92,28 +91,9 @@ if __name__ == "__main__":
 
     R = ExponentialReward(state_dim=state_dim, t=target, W=weights)
 
-    ###########################################
-    # Test MGPR which exits on property noise #
-    ###########################################
-    import tensorflow as tf
-    from gpflow.utilities import to_default_float
-    import numpy as np
-
-    float_type = gpflow.config.default_float()
-
-    gp = MGPR((X, Y))
-    print(f"This is noise {gp.noise}")
-    K = gp.K(gp.X)
-    batched_eye = tf.eye(
-        tf.shape(gp.X)[0], batch_shape=[gp.num_outputs], dtype=float_type
-    )
-    L = tf.linalg.cholesky(K + gp.noise[:, None, None] * batched_eye)
-
     pilco = PILCO(
         (X, Y), controller=controller, horizon=T, reward=R, m_init=m_init, S_init=S_init
     )
-
-    print(f"This is prediction: {pilco.training_loss()}")
 
     # for numerical stability
     for model in pilco.mgpr.models:

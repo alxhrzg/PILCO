@@ -204,17 +204,6 @@ class MGPR(gpflow.Module):
 
     @property
     def noise(self):
-
-        """
-        print("This is the type of likelihood.varaince: ")
-        print(
-            f"These are the attributes of likelihood.varaince: {dir([model.likelihood.variance for model in self.models][0])}"
-        )
-        print(
-            f"This is the stack_operation in noise: {[model.likelihood.variance._value() for model in self.models]}"
-        )
-        """
-        # THis works, but leads to errors in downstream tasks
         return tf.stack([model.likelihood.variance._value() for model in self.models])
         # return tf.stack([model.likelihood.variance for model in self.models])
 

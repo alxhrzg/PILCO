@@ -14,6 +14,14 @@ def read_requirements_file(filename):
         return [line.strip() for line in f]
 
 
+######################
+# Check Version Info #
+######################
+vi = sys.version_info
+assert (
+    vi.major >= 3 and vi.minor >= 8
+), f"Trying to install for environment with python: python=={vi.major}.{vi.minor}.{vi.micro} but only python>=3.8.x is allowed"
+
 # Dependencies of PILCO
 packages = find_packages(".")
 setup(

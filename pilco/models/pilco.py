@@ -98,8 +98,8 @@ class PILCO(gpflow.models.BayesianModel):
         if not self.optimizer:
             self.optimizer = gpflow.optimizers.Scipy()
             # self.optimizer = tf.optimizers.Adam()
-            print(f"This is Training Loss: {self.training_loss}")
-            print(f"This is trainable variables: {self.trainable_variables}")
+            # print(f"This is Training Loss: {self.training_loss}")
+            # print(f"This is trainable variables: {self.trainable_variables}")
             self.optimizer.minimize(
                 self.training_loss,
                 self.trainable_variables,
@@ -154,10 +154,7 @@ class PILCO(gpflow.models.BayesianModel):
         )[0]
 
     def predict(self, m_x, s_x, n):
-        """
-        
-
-        """
+        """"""
         loop_vars = [tf.constant(0, tf.int32), m_x, s_x, tf.constant([[0]], float_type)]
 
         _, m_x, s_x, reward = tf.while_loop(

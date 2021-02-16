@@ -1,3 +1,7 @@
+# This is an adapted version for python3.8.x
+* Minor changes have been made to MGPR and squash_sin to work with the 
+requirements specified in requirements.txt
+
 # Probabilistic Inference for Learning Control (PILCO)
 [![Build Status](https://travis-ci.org/nrontsis/PILCO.svg?branch=master)](https://travis-ci.org/nrontsis/PILCO)
 [![codecov](https://codecov.io/gh/nrontsis/PILCO/branch/master/graph/badge.svg)](https://codecov.io/gh/nrontsis/PILCO)
