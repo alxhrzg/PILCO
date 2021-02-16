@@ -2,6 +2,7 @@ import numpy as np
 import gym
 import gpflow
 from pilco.models import PILCO
+from pilco.models.mgpr import MGPR
 from pilco.controllers import RbfController, LinearController
 from pilco.rewards import ExponentialReward
 import tensorflow as tf
@@ -9,6 +10,7 @@ from utils import rollout, policy
 from gpflow import set_trainable
 
 np.random.seed(0)
+# tf.config.run_functions_eagerly(True)
 
 # Introduces a simple wrapper for the gym environment
 # Reduces dimensions, avoids non-smooth parts of the state space that we can't model
@@ -90,10 +92,28 @@ if __name__ == "__main__":
 
     R = ExponentialReward(state_dim=state_dim, t=target, W=weights)
 
+    ###########################################
+    # Test MGPR which exits on property noise #
+    ###########################################
+    import tensorflow as tf
+    from gpflow.utilities import to_default_float
+    import numpy as np
+
+    float_type = gpflow.config.default_float()
+
+    gp = MGPR((X, Y))
+    print(f"This is noise {gp.noise}")
+    K = gp.K(gp.X)
+    batched_eye = tf.eye(
+        tf.shape(gp.X)[0], batch_shape=[gp.num_outputs], dtype=float_type
+    )
+    L = tf.linalg.cholesky(K + gp.noise[:, None, None] * batched_eye)
+
     pilco = PILCO(
         (X, Y), controller=controller, horizon=T, reward=R, m_init=m_init, S_init=S_init
     )
 
+    print(f"This is prediction: {pilco.training_loss()}")
 
     # for numerical stability
     for model in pilco.mgpr.models:
